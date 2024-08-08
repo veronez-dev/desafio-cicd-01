@@ -1,0 +1,97 @@
+name: Execução de Testes
+on:
+    workflow_call: 
+        
+jobs:
+    test-unit:
+        name: Teste de Unidade
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+          - name: Setup dotnet
+            uses: actions/setup-dotnet@v4
+            with:
+              dotnet-version: "8.0.300"
+          - name: Dotnet Test
+            working-directory: ./src/
+            run: dotnet test ./Review-Filmes.Test.Unit/Review-Filmes.Test.Unit.csproj
+    # test-integration:
+    #     name: Teste de Integração
+    #     runs-on: ubuntu-latest
+    #     services:
+    #         postgre:
+    #             image: postgres:latest
+    #             ports:
+    #                 - 5432:5432
+    #             env:
+    #                 POSTGRES_USER: review
+    #                 POSTGRES_PASSWORD: postgrespwd
+    #                 POSTGRES_DB: review-filmes
+    #     steps:
+    #         - uses: actions/checkout@v4
+    #         - name: Setup dotnet
+    #           uses: actions/setup-dotnet@v4
+    #           with:
+    #             dotnet-version: "8.0.300"
+    #         - name: Teste de integração
+    #           working-directory: ./src/
+    #           env:
+    #             ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=review-filmes;Username=review;Password=postgrespwd"
+    #           run: dotnet test ./Review-Filmes.Test.Integration/Review-Filmes.Test.Integration.csproj
+
+    # sonarqube:
+    #     name: Scan Sonarqube
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #       - name: Set up JDK 17
+    #         uses: actions/setup-java@v1
+    #         with:
+    #             java-version: 1.17
+    #       - uses: actions/checkout@v2
+    #         with:
+    #             fetch-depth: 0 
+            
+    #       - name: Install SonarQube scanner
+    #         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+    #         run: |
+    #             dotnet tool install --global dotnet-sonarscanner
+
+    #       - name: Build and analyze
+    #         working-directory: ./src
+    #         run: |
+    #             dotnet sonarscanner begin /k:"filme" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+    #             dotnet build Review-Filmes.sln
+    #             dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+    #       - name: SonarQube Quality Gate check
+    #         id: sonarqube-quality-gate-check
+    #         uses: sonarsource/sonarqube-quality-gate-action@master
+    #         # Force to fail step after specific time.
+    #         timeout-minutes: 5
+    #         env:
+    #             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #             SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
+    #         with:
+    #             scanMetadataReportFile:  ./src/.sonarqube/out/.sonar/report-task.txt
+    #       - name: "Example show SonarQube Quality Gate Status value"
+    #         if: ${{ failure() }}
+    #         run: echo "O status do Quality é ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+
+    # fs-trivy:
+    #     name: Scan Trivy
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - uses: actions/checkout@v3
+    #         - name: Run Trivy vulnerability scanner
+    #           uses: aquasecurity/trivy-action@0.23.0
+    #           with:
+    #             scan-type: 'fs'
+    #             scan-ref: './src'
+    #             format: sarif
+    #             scanners: "vuln,secret,config"
+    #             output: 'trivy-dotnet-results.sarif'
+    #             severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+    #         - name: Upload Trivy scan results .NET
+    #           uses: github/codeql-action/upload-sarif@v3
+    #           with:
+    #             category: dotnet-result
+    #             sarif_file: 'trivy-dotnet-results.sarif'

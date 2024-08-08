@@ -20,6 +20,15 @@ jobs:
       - working-directory: ./src/
         run: dotnet build Review-Filmes.sln
 
+  testes:
+    needs: [build]
+    permissions:
+        security-events: write
+        actions: read
+        contents: read
+    uses: veronez-dev/desafio-cicd-01/.github/workflows/testes.yml@main
+    secrets: inherit
+
   release:
     name: Criação da Release
     runs-on: ubuntu-latest
