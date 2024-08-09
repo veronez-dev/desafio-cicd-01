@@ -39,7 +39,7 @@ jobs:
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ./src/Review-Filmes.Web/Dockerfile
-          
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -54,3 +54,18 @@ jobs:
             fabricioveronez/rv-teste:latest
           context: ./src
           file: ./src/Review-Filmes.Web/Dockerfile
+
+  deploy:
+    name: "Deploy"        
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.K8S_CONFIG }}
+      - uses: Azure/k8s-deploy@v5
+        with:
+            manifests: |
+              k8s/deployment.yaml
+            images: 'fabricioveronez/rv-teste:v${{ github.run_number }}'
