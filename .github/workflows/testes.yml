@@ -15,29 +15,30 @@ jobs:
           - name: Dotnet Test
             working-directory: ./src/
             run: dotnet test ./Review-Filmes.Test.Unit/Review-Filmes.Test.Unit.csproj
-    # test-integration:
-    #     name: Teste de Integração
-    #     runs-on: ubuntu-latest
-    #     services:
-    #         postgre:
-    #             image: postgres:latest
-    #             ports:
-    #                 - 5432:5432
-    #             env:
-    #                 POSTGRES_USER: review
-    #                 POSTGRES_PASSWORD: postgrespwd
-    #                 POSTGRES_DB: review-filmes
-    #     steps:
-    #         - uses: actions/checkout@v4
-    #         - name: Setup dotnet
-    #           uses: actions/setup-dotnet@v4
-    #           with:
-    #             dotnet-version: "8.0.300"
-    #         - name: Teste de integração
-    #           working-directory: ./src/
-    #           env:
-    #             ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=review-filmes;Username=review;Password=postgrespwd"
-    #           run: dotnet test ./Review-Filmes.Test.Integration/Review-Filmes.Test.Integration.csproj
+            
+    test-integration:
+        name: Teste de Integração
+        runs-on: ubuntu-latest
+        services:
+            postgre:
+                image: postgres:latest
+                ports:
+                    - 5432:5432
+                env:
+                    POSTGRES_USER: review
+                    POSTGRES_PASSWORD: postgrespwd
+                    POSTGRES_DB: review-filmes
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup dotnet
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: "8.0.300"
+            - name: Teste de integração
+              working-directory: ./src/
+              env:
+                ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=review-filmes;Username=review;Password=postgrespwd"
+              run: dotnet test ./Review-Filmes.Test.Integration/Review-Filmes.Test.Integration.csproj
 
     # sonarqube:
     #     name: Scan Sonarqube
