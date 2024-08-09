@@ -56,7 +56,8 @@ jobs:
           file: ./src/Review-Filmes.Web/Dockerfile
 
   deploy:
-    name: "Deploy"        
+    name: "Deploy"     
+    needs: [release]   
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
