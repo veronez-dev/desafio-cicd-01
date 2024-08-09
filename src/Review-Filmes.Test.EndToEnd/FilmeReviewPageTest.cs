@@ -35,6 +35,7 @@ namespace Review_Filmes.Test.EndToEnd
 		[Test]
 		public void TesteCadastroReview()
 		{
+			Console.WriteLine(url);
 			driver.Navigate().GoToUrl(url + "/filme/1");
 			var nome = driver.FindElement(By.Id("Nome"));
 			nome.SendKeys("Teste");
