@@ -54,8 +54,8 @@ namespace Review_Filmes.Test.EndToEnd
 
 			var descricaoAvaliacao = comentarios.FindElement(By.TagName("p")).Text.Contains("Foi bom");
 
-			Assert.That(nomeAvaliacao, Is.EqualTo(false));
-			Assert.That(descricaoAvaliacao, Is.EqualTo(false));
+			Assert.That(nomeAvaliacao, Is.EqualTo(true));
+			Assert.That(descricaoAvaliacao, Is.EqualTo(true));
 		}
 
 		[TearDown]
